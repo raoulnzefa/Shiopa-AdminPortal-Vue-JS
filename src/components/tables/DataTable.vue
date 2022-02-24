@@ -214,25 +214,28 @@ export default defineComponent({
             return this.columns
         },
         canUserEdit(): boolean | null {
-            if (this.$store.state.user.permissions !== undefined) {
-                return this.$store.state.user.permissions[this.type].edit
-            } else {
-                return null
-            }
+            // if (this.$store.state.user.permissions !== undefined) {
+            //     return this.$store.state.user.permissions[this.type].edit
+            // } else {
+            //     return null
+            // }
+            return true
         },
         canUserView(): boolean | null {
-            if (this.$store.state.user.permissions !== undefined) {
-                return this.$store.state.user.permissions[this.type].view
-            } else {
-                return null
-            }
+            // if (this.$store.state.user.permissions !== undefined) {
+            //     return this.$store.state.user.permissions[this.type].view
+            // } else {
+            //     return null
+            // }
+            return true
         },
         canUserDelete(): boolean | null {
-            if (this.$store.state.user.permissions !== undefined) {
-                return this.$store.state.user.permissions[this.type].delete
-            } else {
-                return null
-            } 
+            // if (this.$store.state.user.permissions !== undefined) {
+            //     return this.$store.state.user.permissions[this.type].delete
+            // } else {
+            //     return null
+            // } 
+            return true
         },
         isUsingProfile(): any {
             if (this.$route.name === 'UserList') return true
