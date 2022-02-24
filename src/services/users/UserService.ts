@@ -2,7 +2,7 @@ import http from "@/http-common";
 
 export default {
     login(body: any): Promise<any> {
-        return http.post("/login", body);
+        return http.post("/loginAdmin", body);
     },
 
     logout(token: string): Promise<any> {

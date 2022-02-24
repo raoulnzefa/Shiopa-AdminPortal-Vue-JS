@@ -26,10 +26,19 @@
 			@maxItemsPerPageChange="pageLimitChange" 
 			/>
 		<div class="hidden" :class="isCreating ? 'active' : ''">
-			<CategoryModalCreate @handleSave="createCategory" @close-modal="isCreating = false" />
+			<CategoryModalCreate 
+				:categories="data" 
+				@handleSave="createCategory" 
+				@close-modal="isCreating = false" 
+				/>
 		</div>
 		<div class="hidden" :class="isEditing ? 'active' : ''">
-			<CategoryModalUpdate :id="selectedCategory.name" @handleSave="editCategory" @close-modal="isEditing = false" />
+			<CategoryModalUpdate 
+				:category="selectedCategory" 
+				:categories="data" 
+				@handleSave="editCategory" 
+				@close-modal="isEditing = false" 
+				/>
 		</div>
 		<div class="hidden" :class="isDeleting ? 'active' : ''">
 			<DeleteModal @handleConfirmDelete="deleteCategory" @close-modal="isDeleting = false" />
@@ -39,12 +48,16 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import CategoryService from "@/services/items/CategoryService"
+
+// components
 import DataTable from '@/components/tables/DataTable.vue'
 import CategoryModalCreate from '@/components/modals/CategoryModalCreate.vue'
 import CategoryModalUpdate from '@/components/modals/CategoryModalUpdate.vue'
 import DeleteModal from '@/components/modals/DeleteModal.vue'
+
+// types and services
 import { Category } from "@/types/items/Categories"
+import CategoryService from "@/services/items/CategoryService"
 
 export default defineComponent({
 	name: 'CategoryList',
@@ -70,6 +83,10 @@ export default defineComponent({
 			selectedCategoryId: 0 as number,
 			columns: [
 				{
+					attribute: 'image',
+					name: 'image'
+				},
+				{
 					attribute: 'name',
 					name: 'name'
 				},
@@ -91,6 +108,7 @@ export default defineComponent({
 			await CategoryService.list(url, token)
 				.then((response) => {
 					let res = response.data
+					console.log(res)
 					this.data = res.data
 					this.meta = {
 						current_page: res.current_page,
@@ -117,14 +135,23 @@ export default defineComponent({
 			this.isEditing = true
 		},
 		viewCategory(): void {},
-		async editCategory(categoryName: string): Promise<void> {
+		async editCategory(category: any): Promise<void> {
 			let token = this.$store.state.session.bearerToken
-			let data = { name: categoryName }
+
+			const fd = new FormData()
+			fd.append('name', category.name)
+			// fd.append('parent_id', category.categoryParent)
+			fd.append('image', category.image)
+			fd.append('_method', 'PUT')
+
+			console.log(category)
+
 			let categoryId = this.selectedCategory.id
-			await CategoryService.edit(data, categoryId, token)
+			console.log(categoryId)
+			await CategoryService.edit(fd, categoryId, token)
 				.then((response) => {
 					this.$toast.open({
-						message: `Category ${categoryName} has been successfully updated!`,
+						message: `Category ${category.name} has been successfully updated!`,
 						type: "success"
 					})
 					this.isEditing = false
@@ -219,15 +246,20 @@ export default defineComponent({
 				await this.fetchCategories()
 			}
 		},
-		async createCategory(name: any): Promise<void> {
+		async createCategory(category: any): Promise<void> {
 			let token = this.$store.state.session.bearerToken
-			let data = { name: name }
-			await CategoryService.create(data, token)
+			
+			const fd = new FormData()
+			fd.append('name', category.name)
+			fd.append('parent_id', category.categoryParent)
+			fd.append('image', category.image)
+
+			await CategoryService.create(fd, token)
 				.then((response) => {
 					this.isCreating = false
 					this.fetchCategories()
 					this.$toast.open({
-						message: `Category ${name} has been successfully created!`,
+						message: `Category ${category.name} has been successfully created!`,
 						type: "success"
 					})
 				})

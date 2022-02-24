@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <div class="flex flex-row flew-nowrap my-4">
-            <LogoIcon class="h-24" />
+            <LogoIcon />
         </div>
         <form class="flex flex-col py-2" @submit.prevent="logInUser">
             <label for="email">
@@ -57,6 +57,7 @@ export default defineComponent({
                 .then((response) => {
                     this.user = response.data.user
                     const res = response.data
+                    console.log(response)
 
                     this.$store.dispatch('setBearerToken', res.token)
                     this.$store.dispatch('setAuthentication', true)

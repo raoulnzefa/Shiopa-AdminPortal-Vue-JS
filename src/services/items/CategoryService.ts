@@ -10,7 +10,7 @@ export default {
     },
 
     edit(data: any, categoryId: any, token: any): Promise<any> {
-        return http.put(`/categoryUpdate/${categoryId}`, data, { headers: { "Authorization": `Bearer ${token}` } });
+        return http.post(`/categoryUpdate/${categoryId}`, data, { headers: { "Authorization": `Bearer ${token}` } });
     },
 
     delete(categoryId: any, token: any): Promise<any> {

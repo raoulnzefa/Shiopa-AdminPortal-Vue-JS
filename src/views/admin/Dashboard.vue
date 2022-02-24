@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="flex flew-wrap mb-8 space-x-2">
+		<!-- <div class="flex flew-wrap mb-8 space-x-2">
 			<ReportCard :title="'Number of sales TNBC'" :data="analytics.salesTnbc" />
 			<ReportCard :title="'Number of sales FIAT'" :data="analytics.salesFiat" />
 			<ReportCard :title="'Total of items'" :data="analytics.totalItems" />
@@ -29,7 +29,7 @@
 		<SalesChart 
 			class="grid-span-1"
 			:paymentMethod="'tnbc'"
-			:route="'currentYearSalesChart'" />
+			:route="'currentYearSalesChart'" /> -->
 	</div>
 </template>
 

@@ -1,4 +1,4 @@
-import GuestLogin from '@/views/guest/GuestLogin.vue'
+import AdminLogin from '@/views/guest/AdminLogin.vue'
 import GuestForgotPassword from '@/views/guest/GuestForgotPassword.vue'
 import GuestForgotPasswordEmailSent from '@/views/guest/GuestForgotPasswordEmailSent.vue'
 import GuestResetPassword from '@/views/guest/GuestResetPassword.vue'
@@ -8,8 +8,8 @@ const GuestRoutes = [
     {
 
         path: '/',
-        name: 'GuestLogin',
-        component: GuestLogin,
+        name: 'AdminLogin',
+        component: AdminLogin,
         meta: {
             layout: 'GuestLayout',
             isHome: true
