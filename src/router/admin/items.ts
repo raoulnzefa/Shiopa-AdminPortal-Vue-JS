@@ -14,8 +14,9 @@ import ItemDetails from '@/views/admin/items/ItemDetails.vue'
 import BarcodeList from '@/views/admin/items/BarcodeList.vue'
 
 function safeGuard(to: any, from: any, next: any) {
-    if (!store.getters.userCan(to.meta.action, to.meta.type)) next('/403')
-    else next()
+    // if (!store.getters.userCan(to.meta.action, to.meta.type)) next('/403')
+    // else next()
+    next()
 }
 
 const ItemsRoutes: Array<RouteRecordRaw> = [

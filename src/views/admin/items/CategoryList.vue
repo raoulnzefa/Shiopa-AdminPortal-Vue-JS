@@ -70,6 +70,10 @@ export default defineComponent({
 			selectedCategoryId: 0 as number,
 			columns: [
 				{
+					attribute: 'image',
+					name: 'image'
+				},
+				{
 					attribute: 'name',
 					name: 'name'
 				},
@@ -91,6 +95,7 @@ export default defineComponent({
 			await CategoryService.list(url, token)
 				.then((response) => {
 					let res = response.data
+					console.log(res)
 					this.data = res.data
 					this.meta = {
 						current_page: res.current_page,
