@@ -23,6 +23,16 @@
 					/>
 				</label>
 				<label class="label flex flex-col py-2" for="price">
+					Cost
+					<input
+						class="text-input" 
+						type="text" 
+						id="cost" 
+						v-model="cost" 
+						placeholder="10"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="price">
 					Price
 					<input
 						class="text-input" 
@@ -50,6 +60,26 @@
 						id="inventory" 
 						v-model="inventory" 
 						placeholder="3"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="name">
+					Description
+					<input
+						class="text-input" 
+						type="text" 
+						id="description" 
+						v-model="description" 
+						placeholder="description of the item"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="name">
+					Additional Information
+					<input
+						class="text-input" 
+						type="text" 
+						id="additional_info" 
+						v-model="additional_info"  
+						placeholder="additional information of the item"
 					/>
 				</label>
 				<button 
@@ -95,6 +125,15 @@
 							:options="getSupplierOptions"
 							:searchable="true"
 							placeholder="Pick a Supplier"
+						/>
+					</label>
+					<label class="label flex flex-col py-2">
+						Select Section
+						<Multiselect
+							v-model="section"
+							:options="getSectionOptions"
+							:searchable="true"
+							placeholder="Pick a Section"
 						/>
 					</label>
 				</div>
@@ -159,17 +198,27 @@ export default defineComponent({
 			brandId: '',
 			unitId: '',
 			supplierId: '',
+			section: '',
 			name: '',
+			cost:'',
 			price: '',
 			discount: '',
 			inventory: '',
 			expireDate: '',
 			available: '',
+			description: '',
+			additional_info: '',
 			image: null as any,
 			categories: [],
 			brands: [],
 			units: [],
 			suppliers: [],
+			sections: [
+				{"id":1,"label":"Featured", "name":"featured"},
+				{"id":2,"label":"Popular", "name":"popular"},
+				{"id":3,"label":"latest", "name":"latest"},
+				{"id":4,"label":"discounted", "name":"discounted"},
+			],
 		}
 	},
 	methods: {
@@ -187,15 +236,21 @@ export default defineComponent({
 			fd.append('brand_id', this.brandId)
 			fd.append('unit_id', this.unitId)
 			fd.append('supplier_id', this.supplierId)
+			fd.append('section', this.section)
 			fd.append('name', this.name)
+			fd.append('cost', this.cost)
 			fd.append('price', this.price)
 			fd.append('discount', this.discount)
 			fd.append('inventory', this.inventory)
 			fd.append('expire_date', this.expireDate)
 			fd.append('available', available)
 			fd.append('image', this.image, this.image.name)
+			fd.append('description', this.description)
+			fd.append('additional_info', this.additional_info)
+			console.log(fd);
 			await ItemService.create(fd, token)
 				.then((response) => {
+					console.log(response);
 					this.$toast.open({
 						message: `${this.name} has been successfully added to the database!`,
 						type: "success"
@@ -254,6 +309,7 @@ export default defineComponent({
 			await SupplierService.list(`${url}/?limit=0`, token)
 				.then((response) => {
 					this.suppliers = response.data.data
+					console.log(this.suppliers);
 				})
 				.catch((e: Error) => {
 					console.log(e);
@@ -297,6 +353,16 @@ export default defineComponent({
 				_.push({
 				value: supplier.id,
 				label: supplier.name
+				})
+			})
+			return _
+		},
+		getSectionOptions(): Array<any> {
+			let _: Array<any> = []
+			this.sections.map(function(section: any) {
+				_.push({
+				value: section.name,
+				label: section.label
 				})
 			})
 			return _
