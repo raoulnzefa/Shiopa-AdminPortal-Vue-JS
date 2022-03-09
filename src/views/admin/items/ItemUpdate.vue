@@ -23,6 +23,16 @@
 					/>
 				</label>
 				<label class="label flex flex-col py-2" for="price">
+					Cost
+					<input
+						class="text-input" 
+						type="text" 
+						id="cost" 
+						v-model="item.cost" 
+						placeholder="15"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="price">
 					Price
 					<input
 						class="text-input" 
@@ -42,20 +52,40 @@
 						placeholder="13"
 					/>
 				</label>
-					<label class="label flex flex-col py-2" for="inventory">
-						Inventory
-						<input
-							class="text-input" 
-							type="text" 
-							id="inventory" 
-							v-model="item.inventory" 
-							placeholder="3"
-						/>
-					</label>
+				<label class="label flex flex-col py-2" for="inventory">
+					Inventory
+					<input
+						class="text-input" 
+						type="text" 
+						id="inventory" 
+						v-model="item.inventory" 
+						placeholder="3"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="inventory">
+					Description
+					<input
+						class="text-input" 
+						type="text" 
+						id="description" 
+						v-model="item.description" 
+						placeholder="3"
+					/>
+				</label>
+				<label class="label flex flex-col py-2" for="inventory">
+					Additional Information
+					<input
+						class="text-input" 
+						type="text" 
+						id="inventory" 
+						v-model="item.additional_info" 
+						placeholder="3"
+					/>
+				</label>
 				<button 
 					class="base-btn float-right"
 					v-show="$store.getters.userCan('edit', 'Items')" 
-					@click="updateSupplier">
+					@click="updateItem">
 					Save and exit
 				</button>
 			</div>
@@ -91,8 +121,17 @@
 					<label class="label flex flex-col py-2">
 						Select Supplier
 						<Multiselect
-							v-model="item.unit_id"
+							v-model="item.supplier_id"
 							:options="getSupplierOptions"
+							:searchable="true"
+							placeholder="Pick a Supplier"
+						/>
+					</label>
+					<label class="label flex flex-col py-2">
+						Select Section
+						<Multiselect
+							v-model="item.section"
+							:options="getSectionOptions"
 							:searchable="true"
 							placeholder="Pick a Supplier"
 						/>
@@ -168,6 +207,12 @@ export default defineComponent({
 			brands: [],
 			units: [],
 			suppliers: [],
+			sections: [
+				{"id":1,"label":"Featured", "name":"featured"},
+				{"id":2,"label":"Popular", "name":"popular"},
+				{"id":3,"label":"latest", "name":"latest"},
+				{"id":4,"label":"discounted", "name":"discounted"},
+			],
 			newImage: null as any,
 			newImagePreview: '' as any
 		}
@@ -229,7 +274,7 @@ export default defineComponent({
 					console.log(e);
 				});
 		},
-		async updateSupplier(): Promise<void> {
+		async updateItem(): Promise<void> {
 			let id = this.$route.params.id
 			let token = this.$store.state.session.bearerToken
 			let data: SingleItem = this.item
@@ -241,15 +286,18 @@ export default defineComponent({
 			fd.append("brand_id", data.brand_id)
 			fd.append("unit_id", data.unit_id)
 			fd.append("supplier_id", data.supplier_id)
+			fd.append('section', data.section)
 			fd.append("name", data.name)
+			fd.append("cost", data.cost)
 			fd.append("price", data.price)
 			fd.append("inventory", data.inventory)
 			fd.append("discount", data.discount)
 			fd.append('expire_date', data.expire_date)
 			fd.append('available', available)
 			fd.append('image', image)
+			fd.append('description', data.description)
+			fd.append('additional_info', data.additional_info)
 			fd.append('_method', 'PUT')
-			console.log('form data', fd)
 
 			await ItemService.edit(fd, id, token)
 				.then((response) => {
@@ -261,7 +309,7 @@ export default defineComponent({
 				})
 				.catch((e: Error) => {
 					this.$toast.open({
-						message: `There was an error updating that supplier.`,
+						message: `There was an error updating that Item.`,
 						type: "error"
 					})
 					console.log(e)
@@ -315,7 +363,17 @@ export default defineComponent({
 				})
 			})
 			return _
-		}
+		},
+		getSectionOptions(): Array<any> {
+			let _: Array<any> = []
+			this.sections.map(function(section: any) {
+				_.push({
+				value: section.name,
+				label: section.label
+				})
+			})
+			return _
+		},
 	},
 	async mounted() {
 		this.fetchItem()
